@@ -1,0 +1,28 @@
+.App {
+  text-align: center;
+}
+body{
+  background-image: url(./assets/images/BgImg.jpg);
+  color: white;
+  
+}
+.container{
+  background-color: rgba(0, 0, 0, 0.644);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.game{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+.hero{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
