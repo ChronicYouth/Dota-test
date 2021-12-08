@@ -2,8 +2,11 @@ import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { API_URL } from '../Const';
 import GGWPPng from '../../assets/images/ggwp.png';
 import LoadingGif from '../../assets/images/loading.gif';
+import { useSelector } from 'react-redux';
 
-function Game({heroes}) {
+function Game() {
+  const [firstHero, setFirstHero] = useState({});
+  const [secondHero, setSecondHero] = useState({});
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [currentQuestionId, setCurrentQuestionId] = useState();
@@ -17,7 +20,8 @@ function Game({heroes}) {
   const [usedQuestionsId, setUsedQuestionsId] = useState([]);
   const [isFirstImgLoaded, setIsFirstImgLoaded] = useState(false);
   const [isSecondImgLoaded, setIsSecondImgLoaded] = useState(false);
-
+  const heroes = useSelector((state) => state.heroes.APIheroes);
+  
   const getRandomId = useCallback ((exsistValues) => {
     console.log(exsistValues)
     let randomedId = Math.round(Math.random() * (heroes?.length-1));
@@ -42,14 +46,17 @@ function Game({heroes}) {
     }
   },[heroes])
   //console.log(heroId);
-  const HERO_1 = {
+  useEffect(() =>{ 
+    if (!heroes){return}
+  setFirstHero ({
     name: heroes[heroId[0]]?.localized_name,
     avatarUrl: `${API_URL}${heroes[heroId[0]]?.img}`,
-  };
-  const HERO_2 = {
+  })
+  setSecondHero({
     name: heroes[heroId[1]]?.localized_name,
     avatarUrl: `${API_URL}${heroes[heroId[1]]?.img}`,
-  };
+  })
+  },[heroes, heroId])
 
  //повесить проверку
   const ALL_QUESTIONS = useMemo(() => { 
@@ -183,11 +190,11 @@ function Game({heroes}) {
 
 
   const firstImage = useMemo(() => {
-    return <img onLoad = {setIsFirstImgLoaded(true)} alt="hero1" src={HERO_1.avatarUrl} width="256px" height="144px" style={{ opacity: isFirstImgLoaded ? 1 : 0}}/>
-   }, [heroId, isFirstImgLoaded]) 
+    return <img onLoad = {setIsFirstImgLoaded(true)} alt="firstHero" src={firstHero.avatarUrl} width="256px" height="144px" style={{ opacity: isFirstImgLoaded ? 1 : 0}}/>
+   }, [heroId, isFirstImgLoaded, firstHero]) 
    const secondImage = useMemo(() => {
-    return <img onLoad = {setIsSecondImgLoaded(true)} alt="hero1" src={HERO_2.avatarUrl} width="256px" height="144px" style={{ opacity: isSecondImgLoaded ? 1 : 0}}/>
-   }, [heroId, isSecondImgLoaded]) 
+    return <img onLoad = {setIsSecondImgLoaded(true)} alt="secondHero" src={secondHero.avatarUrl} width="256px" height="144px" style={{ opacity: isSecondImgLoaded ? 1 : 0}}/>
+   }, [heroId, isSecondImgLoaded, secondHero]) 
 
 
   
@@ -203,7 +210,7 @@ function Game({heroes}) {
           {/* <img alt = 'Загрузка ...' src ={LoadingGif} style={{ opacity: isFirstImgLoaded ? 0 : 1}} height="144px"/> */}
           {firstImage}
         </>
-        <h3>{HERO_1.name}</h3>
+        <h3>{firstHero.name}</h3>
         {isRenderButton && (
           <button onClick={compare(ALL_QUESTIONS[currentQuestionId]?.firstHeroValue)}>тыц</button>
         )}
@@ -214,7 +221,7 @@ function Game({heroes}) {
           {/* <img alt = 'Загрузка ...' src ={LoadingGif} style={{ opacity: isSecondImgLoaded ? 0 : 1}} height="144px"/> */}
           {secondImage}
         </>
-        <h3>{HERO_2.name}</h3>
+        <h3>{secondHero.name}</h3>
         {isRenderButton && (
           <button onClick={compare(ALL_QUESTIONS[currentQuestionId]?.secondHeroValue)}>тыц</button>
         )}

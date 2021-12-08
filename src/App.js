@@ -4,18 +4,16 @@ import MainMenu from './components/MainMenu/MainMenu';
 import Game from './components/Game/Game';
 import axios from 'axios';
 import { HEROES_URL } from './components/Const';
+import { fillHeroes } from './store/heroes/heroesSlice';
+import { useDispatch } from 'react-redux';
 function App() {
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [heroes, setHeroes] = useState([]);
-
-
-
+  const dispatch = useDispatch();
   useEffect (()=>{
     axios(HEROES_URL)
     .then((response) => {
-      setHeroes(response.data)
+      dispatch(fillHeroes(response.data));
     })
-
     .catch((e) => {
       console.log(e);
     })
@@ -27,7 +25,7 @@ function App() {
   return (
    <div className = "container">
      
-    {isGameStarted === false ? <MainMenu setIsGameStarted = {setIsGameStarted} /> : <Game heroes = {heroes}/>}
+    {isGameStarted === false ? <MainMenu setIsGameStarted = {setIsGameStarted} /> : <Game/>}
    </div>
   );
 }
